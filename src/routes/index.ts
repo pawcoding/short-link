@@ -1,14 +1,14 @@
-import { Request, Response } from 'express'
+import { Request, Response } from "express";
 
 export function render(req: Request, res: Response): void {
   res.send(`
 ${head()}
 ${body()}
-`)
+`);
 }
 
 function head(): string {
- return `
+  return `
 <!doctype html>
 <html lang="en">
   <head>
@@ -22,7 +22,7 @@ function head(): string {
     <script src="https://unpkg.com/htmx.org@1.9.5" integrity="sha384-xcuj3WpfgjlKF+FXhSQFQ0ZNr39ln+hwjN3npfM9VBnUskLolQAcN80McRIVOPuO" crossorigin="anonymous"></script>    
   </head>
 </html>
-`
+`;
 }
 
 function body(): string {
@@ -86,5 +86,5 @@ function body(): string {
     </div>
   </footer>
 </body>
-`
+`;
 }

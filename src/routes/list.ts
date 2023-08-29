@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { Store } from "../store";
 
 export async function render(req: Request, res: Response): Promise<void> {
-  const list = await Store.Instance.list()
+  const list = await Store.Instance.list();
 
   res.send(`
 <div class="mx-auto px-4 max-w-screen-lg">
@@ -18,7 +18,9 @@ export async function render(req: Request, res: Response): Promise<void> {
     </thead>
   
     <tbody hx-confirm="Are you sure?" hx-target="closest tr" hx-swap="outerHTML">
-      ${list.map(item => `
+      ${list
+        .map(
+          (item) => `
       <tr>
         <td class="font-mono">${item.id}</td>
         <td>${item.url}</td>
@@ -30,9 +32,11 @@ export async function render(req: Request, res: Response): Promise<void> {
           </button>
         </td>
       </tr>
-      `).join('')}
+      `,
+        )
+        .join("")}
     </tbody>
   </table>
 </div>
-`)
+`);
 }

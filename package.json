@@ -8,7 +8,8 @@
     "build": "pnpm exec tsc",
     "start": "node dist/index.js",
     "dev": "concurrently \"pnpm exec tsc --watch\" \"nodemon -q dist/index.js\"",
-    "db:studio": "pnpm exec drizzle-kit studio"
+    "db:studio": "pnpm exec drizzle-kit studio",
+    "prettier": "pnpm exec prettier ./src --write"
   },
   "keywords": [],
   "author": "",
@@ -29,6 +30,7 @@
     "concurrently": "^8.2.1",
     "drizzle-kit": "^0.19.13",
     "nodemon": "^3.0.1",
+    "prettier": "3.0.3",
     "typescript": "^5.2.2"
   }
 }

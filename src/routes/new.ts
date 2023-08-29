@@ -1,4 +1,4 @@
-import { Request, Response } from 'express'
+import { Request, Response } from "express";
 
 export function render(req: Request, res: Response): void {
   res.send(`
@@ -17,5 +17,5 @@ export function render(req: Request, res: Response): void {
 </section>
 
 <section class="flex flex-col gap-4 mt-8" id="new-created"></section>
-`)
+`);
 }
