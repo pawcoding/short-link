@@ -17,12 +17,12 @@ app.use(express.urlencoded({ extended: false }))
 app.use(morgan('dev'))
 
 app.get('/', renderIndex)
-app.get('/new', (req: Request, res: Response) => {
+app.get('/new', renderNew)
+app.get('/list', (req: Request, res: Response) => {
   setTimeout(() => {
-    renderNew(req, res)
+    renderList(req, res)
   }, 3000)
 })
-app.get('/list', renderList)
 app.post('/create', renderShow)
 
 app.get('*', async (req, res) => {
@@ -32,6 +32,16 @@ app.get('*', async (req, res) => {
     res.redirect(maybeLink)
   } else {
     res.sendStatus(404)
+  }
+})
+
+app.delete('*', async (req, res) => {
+  try {
+    await Store.Instance.remove(req.url.substring(1))
+    res.status(200).send('')
+  } catch (e) {
+    console.error(e)
+    res.sendStatus(500)
   }
 })
 

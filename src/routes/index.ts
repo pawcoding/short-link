@@ -39,13 +39,13 @@ function body(): string {
       <div class="flex-none">
         <ul class="menu menu-horizontal px-1">
           <li>
-            <a hx-get="/new" hx-target="main" hx-indicator="#main-load">
+            <a hx-get="/new" hx-trigger="click, keyup[altKey&&key=='n'] from:body" hx-target="main" hx-indicator="#main-load">
               New link
             </a>
           </li>
 
           <li>
-            <a hx-get="/list" hx-target="main" hx-indicator="#main-load">
+            <a hx-get="/list" hx-trigger="click, keyup[altKey&&key=='l'] from:body" hx-target="main" hx-indicator="#main-load">
               All links
             </a>
           </li>
@@ -55,11 +55,13 @@ function body(): string {
   </header>
   
   <div class="relative">
-  <section class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 htmx-indicator" id="main-load">
-    <span class="loading loading-dots loading-lg text-accent-focus mx-auto"></span>
-  </section>
+    <section class="modal modal-open pointer-events-none htmx-indicator" id="main-load">
+      <div class="modal-box text-center w-32">
+        <span class="loading loading-dots loading-lg text-accent-focus mx-auto"></span>
+      </div>
+    </section>
 
-  <main hx-get="/new" hx-trigger="load" hx-indicator="#main-load"></main>
+    <main hx-get="/new" hx-trigger="load"></main>
   </div>
 
   <footer class="footer footer-center p-10 bg-base-200 text-base-content rounded">
