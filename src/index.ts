@@ -25,8 +25,8 @@ app.get('/new', (req: Request, res: Response) => {
 app.get('/list', renderList)
 app.post('/create', renderShow)
 
-app.get('*', (req, res) => {
-  const maybeLink = Store.Instance.getLink(req.url.substring(1))
+app.get('*', async (req, res) => {
+  const maybeLink = await Store.Instance.getLink(req.url.substring(1))
 
   if (maybeLink) {
     res.redirect(maybeLink)

@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { Store } from "../store";
 
-export function render(req: Request, res: Response): void {
-  const list = Store.Instance.list()
+export async function render(req: Request, res: Response): Promise<void> {
+  const list = await Store.Instance.list()
 
   res.send(`
 <div>
@@ -11,6 +11,8 @@ export function render(req: Request, res: Response): void {
       <tr>
         <th>ID</th>
         <th>URL</th>
+        <th>Creation</th>
+        <th>Used</th>
         <th></th>
       </tr>
     </thead>
@@ -20,6 +22,8 @@ export function render(req: Request, res: Response): void {
       <tr>
         <td>${item.id}</td>
         <td>${item.url}</td>
+        <td>${item.createdAt.toUTCString()}</td>
+        <td>${item.used}</td>
         <td></td>
       </tr>
       `).join('')}
