@@ -1,82 +1,72 @@
-import { drizzle, BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
-import Database from "better-sqlite3";
-import Hashids from "hashids";
-import { Link, links } from "./db/schema";
-import { desc, eq } from "drizzle-orm";
+import { Database } from "bun:sqlite";
+import crypto from "crypto";
+import { Link } from "./types/link";
 
-const sqlite = new Database("short.db");
-const hashids = new Hashids(process.env.SALT, 10);
+const db = new Database("short-links.db", { create: true });
 
-export class Store {
-  private static _instance?: Store;
+export function addLink(url: string): string {
+  try {
+    const id = crypto.randomBytes(8).toString("base64url");
+    console.log(`Adding link ${id} -> ${url}`);
 
-  private constructor() {}
+    const query = db.query("INSERT INTO links (id, url) VALUES (?1, ?2)");
+    query.run(id, url);
 
-  public static get Instance() {
-    return this._instance || (this._instance = new this());
+    return id;
+  } catch (e) {
+    console.error(e);
+    throw e;
   }
+}
 
-  private _db: BetterSQLite3Database = drizzle(sqlite);
+export function useLink(id: string): string {
+  try {
+    const query = db.query("SELECT url FROM links WHERE id = ?1");
+    const link = query.get(id) as { url: string } | undefined;
 
-  public async addLink(url: string): Promise<string> {
-    const inserted = await this._db
-      .insert(links)
-      .values({
-        url: url,
-        createdAt: new Date(),
-      })
-      .returning({ insertedId: links.id });
-
-    const id = inserted[0].insertedId;
-    return hashids.encode(id);
-  }
-
-  public async getLink(id: string): Promise<string | undefined> {
-    try {
-      const [numericId] = hashids.decode(id);
-
-      if (!numericId || typeof numericId !== "number") return undefined;
-
-      const [link] = await this._db
-        .select()
-        .from(links)
-        .where(eq(links.id, numericId))
-        .limit(1);
-
-      if (!link) return undefined;
-
-      await this._db
-        .update(links)
-        .set({
-          used: link.used + 1,
-        })
-        .where(eq(links.id, numericId));
-
-      return link.url;
-    } catch (e) {
-      console.error(e);
-      return undefined;
+    if (!link) {
+      throw new Error(`Link ${id} not found`);
     }
+
+    const update = db.query(
+      "UPDATE links SET use_count = use_count + 1 WHERE id = ?1",
+    );
+    update.run(id);
+
+    return link.url;
+  } catch (e) {
+    console.error(e);
+    throw e;
   }
+}
 
-  public async list(): Promise<(Omit<Link, "id"> & { id: string })[]> {
-    const list = await this._db
-      .select()
-      .from(links)
-      .orderBy(desc(links.createdAt));
+export function getLinks(): Link[] {
+  try {
+    const query = db.query("SELECT * FROM links");
+    const raw_links = query.all();
 
-    return list.map((link) => ({
-      id: hashids.encode(link.id),
+    Bun.sleepSync(2000);
+
+    const links: Link[] = raw_links.map((link: any) => ({
+      id: link.id,
       url: link.url,
-      createdAt: link.createdAt,
-      used: link.used,
+      createdAt: new Date(link.created_at),
+      useCount: link.use_count,
     }));
+
+    return links as Link[];
+  } catch (e) {
+    console.error(e);
+    throw e;
   }
+}
 
-  public async remove(id: string): Promise<void> {
-    const [numericId] = hashids.decode(id);
-
-    if (!numericId || typeof numericId !== "number") return undefined;
-    await this._db.delete(links).where(eq(links.id, numericId));
+export function deleteLink(id: string): void {
+  try {
+    const query = db.query("DELETE FROM links WHERE id = ?1");
+    query.run(id);
+  } catch (e) {
+    console.error(e);
+    throw e;
   }
 }
