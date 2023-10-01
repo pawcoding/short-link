@@ -1,27 +1,28 @@
 import Handlebars from "handlebars";
-import { Store } from "../store";
 import { t } from "elysia";
-
-export function get() {
-  return Bun.file("./src/templates/new.html");
-}
+import { server, ElysiaApp } from "..";
 
 const postTemplate = Handlebars.compile(
   await Bun.file("./src/templates/add.html").text(),
 );
 
-export const post = {
-  handler: ({ body, store }: { body: { link: string }; store: Store }) => {
-    const id = store.addLink(body.link);
+export default (app: ElysiaApp) =>
+  app
+    .use(server)
+    .get("/", () => Bun.file("./src/templates/new.html"))
+    .post(
+      "/",
+      ({ body }) => {
+        const id = app.store.store.addLink(body.link);
 
-    return postTemplate({
-      link: body.link,
-      url: `http://localhost:${Bun.env["PORT"] ?? 3000}/${id}`,
-    });
-  },
-  hooks: {
-    body: t.Object({
-      link: t.String(),
-    }),
-  },
-};
+        return postTemplate({
+          link: body.link,
+          url: `http://localhost:${Bun.env["PORT"] ?? 3000}/${id}`,
+        });
+      },
+      {
+        body: t.Object({
+          link: t.String(),
+        }),
+      },
+    );

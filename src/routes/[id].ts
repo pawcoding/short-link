@@ -1,33 +1,29 @@
 import { t } from "elysia";
-import { Store } from "../store";
+import { ElysiaApp, server } from "..";
 
-export const get = {
-  handler: ({
-    params,
-    store,
-    set,
-  }: {
-    params: { id: string };
-    store: Store;
-    set: any;
-  }) => {
-    const url = store.useLink(params.id);
-    set.redirect = url;
-  },
-  hooks: {
-    params: t.Object({
-      id: t.String(),
-    }),
-  },
-};
-
-export const del = {
-  handler: ({ params, store }: { params: { id: string }; store: Store }) => {
-    store.deleteLink(params.id);
-  },
-  hooks: {
-    params: t.Object({
-      id: t.String(),
-    }),
-  },
-};
+export default (app: ElysiaApp) =>
+  app
+    .use(server)
+    .get(
+      "/",
+      ({ params, set }) => {
+        const url = app.store.store.useLink(params.id);
+        set.redirect = url;
+      },
+      {
+        params: t.Object({
+          id: t.String(),
+        }),
+      },
+    )
+    .delete(
+      "/",
+      ({ params }) => {
+        app.store.store.deleteLink(params.id);
+      },
+      {
+        params: t.Object({
+          id: t.String(),
+        }),
+      },
+    );
