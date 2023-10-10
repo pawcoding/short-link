@@ -9,6 +9,9 @@ import data from "../package.json";
 export const server = new Elysia()
   .use(html())
   .use(staticPlugin())
+  .get("/public/htmx.js", () =>
+    Bun.file("node_modules/htmx.org/dist/htmx.min.js"),
+  )
   .state("store", new Store())
   .state("version", data.version)
   .use(autoroutes())

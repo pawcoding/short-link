@@ -4,6 +4,8 @@ This is a small demo project for showcasing the power of HTMX together with Bun.
 
 ## What is short link?
 
+![Screenshot](./short-link.png)
+
 It is just a basic link shortener, with the ability to:
 
 - Create new short links
