@@ -1,6 +1,8 @@
 # Short Link
 
-This is a small demo project for showcasing the power of HTMX together with Bun. It was originally created for a talk of mine at [FrankenJS Würzburg](https://www.meetup.com/de-DE/front-end-wuerzburg/) as an introduction to HTMX.
+This is a small demo project for showcasing the power of HTMX together with Bun.
+It was originally created for a talk of mine at [FrankenJS Würzburg](https://www.meetup.com/de-DE/front-end-wuerzburg/) as an introduction to HTMX.
+To learn more about this project, you can read the [blog post](https://blog.pawcode.de/posts/introduction-to-htmx) I wrote about it after the talk.
 
 ## What is short link?
 
